@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block metadescription %}
+    {% if category %}
+        {{ category.desc | truncatewords:155 }}
+    {% else %}
+        Welcome to ABC Store
+    {% endif %}
+{% endblock %}
+
+{% block title %}
+    {% if category %}
+        {{ category.title }} - ABC Store
+    {% else %}
+        Here you can buy several items
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if category %}
+            <div class="row my-4">
+                <div class="mx-auto">
+                    <p><a href="{% url 'ecommerceapp:allproducts' %}">Product Collections</a></p>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="mx-auto">
+            {% if category %}
+                <img class="my_image" src="{{ category.img.url }}" alt="{{ category.name }}" width="300" height="200">
+            {% else %}
+                <img class="my_image my_image_padding" src="{% static 'img/ban.jpg' %}" width="1250px">
+            {% endif %}
+        </div>
+
+        {% if category %}
+            <div>
+                <h2 class="text-center my_title">{{ category.name }}</h2>
+                <p class="text-justify">{{ category.desc }}</p>
+            </div>
+        {% else %}
+            <div>
+                <h1 class="text-center my_title">Our Product Collections</h1>
+                <p class="text-justify">
+                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical
+                    Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at
+                    Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a
+                    Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the
+                    undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et
+                    Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the
+                    theory of ethics, very popular during the Renaissance.
+                </p>
+            </div>
+        {% endif %}
+
+        <div class="row mx-auto mt-4">
+            {% for prod in product.object_list %}
+                <div class="col-9 col-sm-12 col-md-4 col-lg-4 my-3">
+                    <div class="card text-center" style="min-width: 18rem;">
+                        <a href="{{ prod.get_url }}"><img class="card-img-top my_image" src="{{ prod.img.url }}" alt="{{ prod.name }}"></a>
+                    </div>
+                    <div class="card-body">
+                        <h4>{{ prod.name }}</h4><br>
+                        <p>{{ prod.price }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mx-auto">
+            {% if product.paginator.num_pages > 1 %}
+                <hr>
+                <div class="text-center">
+                    {% for pg in product.paginator.page_range %}
+                        <a href="?page={{ pg }}" class="btn btn-light btn-sm {% if product.number == pg %} active {% endif %}">{{pg}}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <br>
+    </div>
+{% endblock %}
